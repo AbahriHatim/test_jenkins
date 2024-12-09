@@ -4,7 +4,7 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 script {
-                    sh 'pip install fastapi pytest uvicorn'
+                    sh 'pip install fastapi pytest uvicorn httpx'
                 }
             }
         }
