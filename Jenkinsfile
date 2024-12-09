@@ -8,12 +8,18 @@ pipeline {
                 }
             }
         }
+         stages {
         stage('Test') {
             steps {
                 script {
-                    sh 'pytest test_main.py --maxfail=1 --disable-warnings'
+                    // Set up Python environment and run tests
+                    sh '''
+                        python3 -m venv venv
+                        . venv/bin/activate
+                        pip install pytest fastapi
+                        pytest test_main.py
+                    '''
                 }
             }
-        }
     }
 }
