@@ -1,10 +1,5 @@
 pipeline {
-    agent {
-        docker {
-            image 'my-python-app' // Use the Docker image
-            args '-v /var/run/docker.sock:/var/run/docker.sock' // Optional: if you need Docker inside Docker
-        }
-    }
+    agent any
 
     stages {
         stage('Checkout') {
@@ -14,20 +9,50 @@ pipeline {
             }
         }
 
-        stage('Run Tests') {
-            steps {
-                // Run tests using pytest
-                sh 'python -m pytest'
+        stage('Test') {
+            matrix {
+                axes {
+                    axis {
+                        name 'PYTHON_VERSION'
+                        values '3.8', '3.9', '3.10', '3.11'
+                    }
+                }
+                stages {
+                    stage('Set up Python') {
+                        steps {
+                            script {
+                                // Use Docker to set up Python environment
+                                sh """
+                                docker run --rm -v \$(pwd):/app -w /app python:${PYTHON_VERSION} bash -c "
+                                    python -m pip install --upgrade pip &&
+                                    pip install fastapi uvicorn pytest httpx
+                                "
+                                """
+                            }
+                        }
+                    }
+
+                    stage('Run Tests') {
+                        steps {
+                            script {
+                                // Run tests inside the Docker container
+                                sh """
+                                docker run --rm -v \$(pwd):/app -w /app python:${PYTHON_VERSION} bash -c "pytest"
+                                """
+                            }
+                        }
+                    }
+                }
             }
         }
     }
 
     post {
         success {
-            echo 'All stages completed successfully!'
+            echo 'All tests passed successfully!'
         }
         failure {
-            echo 'One or more stages failed.'
+            echo 'One or more tests failed.'
         }
     }
 }
