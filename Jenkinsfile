@@ -1,14 +1,15 @@
 pipeline {
     agent {
-        docker { 
-            image 'python:3.9-slim' 
+        docker {
+            image 'python:3.9-slim'
+            args '-u root:root' // Optional: run as root if needed
         }
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url:'https://github.com/AbahriHatim/test_jenkins.git'
+                checkout scm // Use checkout scm for better compatibility
             }
         }
 
@@ -26,7 +27,7 @@ pipeline {
             steps {
                 sh '''
                     . venv/bin/activate
-                    python3 -m pytest
+                    python -m pytest
                 '''
             }
         }
