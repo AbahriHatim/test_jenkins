@@ -2,6 +2,20 @@ pipeline {
     agent any
 
     stages {
+        stage('Install Python') {
+            steps {
+                // For Ubuntu/Debian
+                sh '''
+                    sudo apt-get update
+                    sudo apt-get install -y python3 python3-pip python3-venv
+                '''
+                // For CentOS/RHEL
+                // sh '''
+                //     sudo yum install -y python3 python3-pip
+                // '''
+            }
+        }
+
         stage('Checkout') {
             steps {
                 git branch: 'main', url:'https://github.com/AbahriHatim/test_jenkins.git'
@@ -10,7 +24,6 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                // Use python -m pip to ensure pip is used from the correct Python installation
                 sh '''
                     python3 -m venv venv
                     . venv/bin/activate
