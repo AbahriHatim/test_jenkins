@@ -1,35 +1,35 @@
 pipeline {
     agent any
+
     stages {
-        stage('Clone Repository') {
+        stage('Checkout') {
             steps {
-                git 'https://your-repo-url.git'
+                // Checkout the code from your repository
+                git 'https://github.com/AbahriHatim/test_jenkins.git' // Replace with your actual repo URL
             }
         }
+
         stage('Install Dependencies') {
             steps {
-                script {
-                    sh 'pip3 install fastapi uvicorn pytest'
-                }
+                // Install Python dependencies
+                sh 'pip install -r requirements.txt'
             }
         }
+
         stage('Run Tests') {
             steps {
-                script {
-                    sh 'pytest test_main.py --maxfail=1 --disable-warnings'
-                }
+                // Run your tests
+                sh 'pytest'
             }
         }
     }
+
     post {
-        always {
-            echo 'Pipeline finished.'
-        }
         success {
-            echo 'Tests passed successfully!'
+            echo 'All stages completed successfully!'
         }
         failure {
-            echo 'Tests failed. Please check the logs.'
+            echo 'One or more stages failed.'
         }
     }
 }
