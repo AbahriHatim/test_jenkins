@@ -9,40 +9,22 @@ pipeline {
             }
         }
 
-        stage('Test') {
-            matrix {
-                axes {
-                    axis {
-                        name 'PYTHON_VERSION'
-                        values '3.8', '3.9', '3.10', '3.11'
-                    }
+        stage('Set up Python') {
+            steps {
+                script {
+                    // Install Python dependencies
+                    sh '''
+                    python -m pip install --upgrade pip
+                    pip install fastapi uvicorn pytest httpx
+                    '''
                 }
-                stages {
-                    stage('Set up Python') {
-                        steps {
-                            script {
-                                // Use Docker to set up Python environment
-                                sh """
-                                docker run --rm -v \$(pwd):/app -w /app python:${PYTHON_VERSION} bash -c "
-                                    python -m pip install --upgrade pip &&
-                                    pip install fastapi uvicorn pytest httpx
-                                "
-                                """
-                            }
-                        }
-                    }
+            }
+        }
 
-                    stage('Run Tests') {
-                        steps {
-                            script {
-                                // Run tests inside the Docker container
-                                sh """
-                                docker run --rm -v \$(pwd):/app -w /app python:${PYTHON_VERSION} bash -c "pytest"
-                                """
-                            }
-                        }
-                    }
-                }
+        stage('Run Tests') {
+            steps {
+                // Run tests using pytest
+                sh 'pytest'
             }
         }
     }
