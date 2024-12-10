@@ -1,5 +1,10 @@
 pipeline {
-    agent any // Use any available agent
+    agent {
+        docker {
+            image 'my-python-app' // Use the Docker image
+            args '-v /var/run/docker.sock:/var/run/docker.sock' // Optional: if you need Docker inside Docker
+        }
+    }
 
     stages {
         stage('Checkout') {
@@ -9,24 +14,10 @@ pipeline {
             }
         }
 
-        stage('Install Dependencies') {
-            steps {
-                // Install Python dependencies
-                sh '''
-                    python3 -m venv venv
-                    . venv/bin/activate
-                    pip install -r requirements.txt
-                '''
-            }
-        }
-
         stage('Run Tests') {
             steps {
                 // Run tests using pytest
-                sh '''
-                    . venv/bin/activate
-                    python3 -m pytest
-                '''
+                sh 'python -m pytest'
             }
         }
     }
