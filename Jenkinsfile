@@ -9,7 +9,7 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 script {
-                    sh 'pip3 install fastapi uvicorn pytest'
+                    sh 'py -m pip3 install fastapi uvicorn pytest'
                 }
             }
         }
