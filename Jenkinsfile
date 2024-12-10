@@ -4,22 +4,27 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                // Checkout the code from your repository
-                 git branch: 'main', url:'https://github.com/AbahriHatim/test_jenkins.git' // Replace with your actual repo URL
+                git branch: 'main', url:'https://github.com/AbahriHatim/test_jenkins.git'
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                // Install Python dependencies
-                sh 'pip install -r requirements.txt'
+                // Use python -m pip to ensure pip is used from the correct Python installation
+                sh '''
+                    python3 -m venv venv
+                    . venv/bin/activate
+                    python3 -m pip install -r requirements.txt
+                '''
             }
         }
 
         stage('Run Tests') {
             steps {
-                // Run your tests
-                sh 'pytest'
+                sh '''
+                    . venv/bin/activate
+                    python3 -m pytest
+                '''
             }
         }
     }
