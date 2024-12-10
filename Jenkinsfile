@@ -4,22 +4,29 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 script {
-                    sh 'pip install fastapi pytest uvicorn httpx'
+                    // Install dependencies
+                    sh 'pip install fastapi uvicorn pytest'
                 }
             }
         }
-         stages {
-        stage('Test') {
+        stage('Run Tests') {
             steps {
                 script {
-                    // Set up Python environment and run tests
-                    sh '''
-                        python3 -m venv venv
-                        . venv/bin/activate
-                        pip install pytest fastapi
-                        pytest test_main.py
-                    '''
+                    // Run the tests
+                    sh 'pytest test_main.py --maxfail=1 --disable-warnings'
                 }
             }
+        }
+    }
+    post {
+        always {
+            echo 'Pipeline finished.'
+        }
+        success {
+            echo 'Tests passed successfully!'
+        }
+        failure {
+            echo 'Tests failed. Please check the logs.'
+        }
     }
 }
