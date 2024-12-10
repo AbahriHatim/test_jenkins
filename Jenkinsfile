@@ -6,8 +6,8 @@ pipeline {
             steps {
                 // For Ubuntu/Debian
                 sh '''
-                    sudo apt-get update
-                    sudo apt-get install -y python3 python3-pip python3-venv
+                     apt-get update
+                     apt-get install -y python3 python3-pip python3-venv
                 '''
                 // For CentOS/RHEL
                 // sh '''
