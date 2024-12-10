@@ -1,18 +1,6 @@
 pipeline {
     agent any
     stages {
-        stage('Clone Repository') {
-            steps {
-                git 'https://github.com/AbahriHatim/test_jenkins.git'
-            }
-        }
-        stage('Install Dependencies') {
-            steps {
-                script {
-                    sh 'py -m pip3 install fastapi uvicorn pytest'
-                }
-            }
-        }
         stage('Run Tests') {
             steps {
                 script {
