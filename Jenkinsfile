@@ -4,15 +4,10 @@ pipeline {
     stages {
         stage('Install Python') {
             steps {
-                // For Ubuntu/Debian
                 sh '''
-                     apt-get update
-                     apt-get install -y python3 python3-pip python3-venv
+                    sudo -E apt-get update
+                    sudo -E apt-get install -y python3 python3-pip python3-venv
                 '''
-                // For CentOS/RHEL
-                // sh '''
-                //     sudo yum install -y python3 python3-pip
-                // '''
             }
         }
 
