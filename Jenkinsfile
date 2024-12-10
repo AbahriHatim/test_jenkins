@@ -1,18 +1,21 @@
 pipeline {
     agent any
     stages {
+        stage('Clone Repository') {
+            steps {
+                git 'https://your-repo-url.git'
+            }
+        }
         stage('Install Dependencies') {
             steps {
                 script {
-                    // Install dependencies
-                    sh 'pip install fastapi uvicorn pytest'
+                    sh 'pip3 install fastapi uvicorn pytest'
                 }
             }
         }
         stage('Run Tests') {
             steps {
                 script {
-                    // Run the tests
                     sh 'pytest test_main.py --maxfail=1 --disable-warnings'
                 }
             }
