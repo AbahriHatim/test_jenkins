@@ -1,22 +1,19 @@
 pipeline {
-    agent {
-        docker {
-            image 'python:3.9-slim'
-            args '-u root:root' // Optional: run as root if needed
-        }
-    }
+    agent any // Use any available agent
 
     stages {
         stage('Checkout') {
             steps {
-                checkout scm // Use checkout scm for better compatibility
+                // Checkout the code from the repository
+                git branch: 'main', url: 'https://github.com/AbahriHatim/test_jenkins.git'
             }
         }
 
         stage('Install Dependencies') {
             steps {
+                // Install Python dependencies
                 sh '''
-                    python -m venv venv
+                    python3 -m venv venv
                     . venv/bin/activate
                     pip install -r requirements.txt
                 '''
@@ -25,9 +22,10 @@ pipeline {
 
         stage('Run Tests') {
             steps {
+                // Run tests using pytest
                 sh '''
                     . venv/bin/activate
-                    python -m pytest
+                    python3 -m pytest
                 '''
             }
         }
